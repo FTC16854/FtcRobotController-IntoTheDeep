@@ -1,0 +1,45 @@
+Control Hub
+Motor Ports                    Configuration Names          color
+    0   LB Motor                lb_drive
+    1   FL Motor                lf_drive
+    2   FR Motor                rf_drive
+    3   RB Motor                rb_drive
+
+Servo Ports
+    0
+    1
+    2
+    3
+    4
+    5
+
+Digital Channels
+    0
+
+I2C Ports
+    Bus 0                   imu
+    Bus 1
+    Bus 2
+    Bus 3
+
+---------------------------------------------------------
+---------------------------------------------------------
+Expansion Hub
+Motor Ports                    Configuration Names   color
+    0
+    1
+    2
+    3
+
+Servo Ports
+    0
+    1
+    2
+    3
+    4
+    5
+
+I2C Ports
+    Bus 1
+    Bus 2
+    Bus 3
