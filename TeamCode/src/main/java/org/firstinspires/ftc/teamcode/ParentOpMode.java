@@ -32,10 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -61,7 +58,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Parent Opmode Example", group="Linear Opmode")
 @Disabled
-public class Example_ParentOpMode extends LinearOpMode {
+public class ParentOpMode extends LinearOpMode {
 
     // Declare OpMode members, hardware variables
     public ElapsedTime runtime = new ElapsedTime();
@@ -132,13 +129,9 @@ public class Example_ParentOpMode extends LinearOpMode {
             // This function will be be overridden by child opmode classes
 
 
+
             //include emergency stop check in all runOpMode() functions/methods
             //implementation depends on which E-stop function will be used (boolean/void)
-            if(emergencyStopped()){
-                //terminateOpModeNow();   // New method in 2022. (Immediately, Cleanly exits OpMode)
-                break;
-            }
-
             //checkEmergencyStop(); // Stops motors and Terminates if buttons are pressed
             //without additional code in the while(opModeIsActive) loop.
 
@@ -156,19 +149,19 @@ public class Example_ParentOpMode extends LinearOpMode {
         return gamepad1.left_stick_x;
     }
     public double left_sticky_y() { return -gamepad1.left_stick_y;}
-    public double right_sticky_y() { return -gamepad1.right_stick_y}
-    public double right_sticky_x() { return  gamepad1.right_stick_x}
+    public double right_sticky_y() { return -gamepad1.right_stick_y;}
+    public double right_sticky_x() { return  gamepad1.right_stick_x;}
     
 
     // Buttons
     public boolean emergencyButtons(){
         // check for combination of buttons to be pressed before returning true
-        return true;
+        return gamepad1.y && gamepad1.x;
     }
 
 
     public boolean triggerButton(){
-        if((gamepad1.right_trigger>.25)||(gamepad2.right_trigger>.25)){
+        if(gamepad1.right_trigger>.25){
             return true;         // Converts analog triggers into digital button presses (booleans)
         }
         else{
@@ -179,24 +172,11 @@ public class Example_ParentOpMode extends LinearOpMode {
 
     /****************************/
     // Emergency Stop Functions
-    // Only one of these is needed.
-    // If using boolean version, call to function will need to be
-    // placed in conditional (if/then) statement with code to break from loop or terminate opmode.
-
-    public boolean emergencyStopped(){
-        if (emergencyButtons()) {
-            //stop all motors, servos, etc.
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
 
     public void checkEmergencyStop(){
         if(emergencyButtons()){
-            //stop all motors, servos, etc.
-            terminateOpModeNow();   // Force exit of OpMode
+            stopper();
+            terminateOpModeNow();
         }
     }
 
@@ -208,12 +188,16 @@ public class Example_ParentOpMode extends LinearOpMode {
     // Assign left and right drive speed using arguments/parameters rather than hardcoding
     // thumb stick values inside function body. This will allow tank drive to be reused for
     // autonomous programs without additional work
-    public void tankdrive(double left, double right){
-
+    public void tankDrive(double left, double right){
+        leftFront.setPower(left);
+        leftBack.setPower(left);
+        rightFront.setPower(right);
+        rightBack.setPower(right);
     }
 
-
-
+    public void stopper(){
+        tankDrive(0,0);
+    }
 
     /*****************************/
     //More Methods (Functions)
