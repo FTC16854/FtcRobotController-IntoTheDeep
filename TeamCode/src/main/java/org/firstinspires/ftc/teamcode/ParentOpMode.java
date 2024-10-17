@@ -208,6 +208,11 @@ public class ParentOpMode extends LinearOpMode {
         rightBack.setPower(right);
     }
 
+    public void holonomic(){
+        double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
+
+    }
+
     public void stopper(){
         tankDrive(0,0);
     }

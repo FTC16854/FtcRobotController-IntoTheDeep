@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  **/
 
 @TeleOp(name="Tank Drive", group="Linear Opmode")
-@Disabled
+//@Disabled
 public class OpMode_TankDrive extends ParentOpMode {
 
 
@@ -81,6 +81,7 @@ public class OpMode_TankDrive extends ParentOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             tankDrive(left_sticky_y(),right_sticky_y());
+
             checkEmergencyStop();
             telemetry.update();
         }

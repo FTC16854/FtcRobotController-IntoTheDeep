@@ -156,8 +156,8 @@ public class Example_ParentOpMode extends LinearOpMode {
         return gamepad1.left_stick_x;
     }
     public double left_sticky_y() { return -gamepad1.left_stick_y;}
-    public double right_sticky_y() { return -gamepad1.right_stick_y}
-    public double right_sticky_x() { return  gamepad1.right_stick_x}
+    public double right_sticky_y() { return -gamepad1.right_stick_y;}
+    public double right_sticky_x() { return  gamepad1.right_stick_x;}
     
 
     // Buttons

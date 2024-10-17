@@ -18,7 +18,7 @@ Digital Channels
 
 I2C Ports
     Bus 0                   imu
-    Bus 1
+    Bus 1                   sensor_otos
     Bus 2
     Bus 3
 
