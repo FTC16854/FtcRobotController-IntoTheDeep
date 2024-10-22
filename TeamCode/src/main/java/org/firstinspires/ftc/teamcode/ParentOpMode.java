@@ -210,7 +210,10 @@ public class ParentOpMode extends LinearOpMode {
 
     public void holonomic(){
         double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
+        double angle = Math.atan2(left_sticky_y(), left_sticky_x());
+        double rotateVelocity = right_sticky_x();
 
+        double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
     }
 
     public void stopper(){
