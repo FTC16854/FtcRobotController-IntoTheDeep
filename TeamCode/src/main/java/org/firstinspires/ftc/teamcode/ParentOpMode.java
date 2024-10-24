@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -71,7 +72,7 @@ public class ParentOpMode extends LinearOpMode {
     private DcMotor rightBack = null;
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
-
+    private DcMotor Intake = null;
 
     // Sensor Items
 
@@ -88,6 +89,7 @@ public class ParentOpMode extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "rb_drive");
         leftFront = hardwareMap.get(DcMotor.class,"lf_drive");
         leftBack = hardwareMap.get(DcMotor.class, "lb_drive");
+        Intake = hardwareMap.get(DcMotor.class, "Intake");
 
         //Sensors
         OdometrySensor = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
@@ -102,12 +104,14 @@ public class ParentOpMode extends LinearOpMode {
         rightBack.setDirection(DcMotor.Direction.REVERSE);
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
+        Intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Set brake or coast modes.
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //BRAKE or FLOAT (Coast)
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Update Driver Station Status Message after init
         telemetry.addData("Status:", "Initialized");
@@ -164,14 +168,14 @@ public class ParentOpMode extends LinearOpMode {
     public double left_sticky_y() { return -gamepad1.left_stick_y;}
     public double right_sticky_y() { return -gamepad1.right_stick_y;}
     public double right_sticky_x() { return  gamepad1.right_stick_x;}
-    
 
     // Buttons
     public boolean emergencyButtons(){
         // check for combination of buttons to be pressed before returning true
         return gamepad1.y && gamepad1.x;
     }
-
+    public double outtake_trigger() { return gamepad1.left_trigger;}
+    public double intake_trigger() { return gamepad1.right_trigger;}
 
     public boolean triggerButton(){
         if(gamepad1.right_trigger>.25){
@@ -210,10 +214,24 @@ public class ParentOpMode extends LinearOpMode {
 
     public void holonomic(){
         double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
-        double angle = Math.atan2(left_sticky_y(), left_sticky_x());
+        double offset = Math.toRadians(-90);
+        double angle = Math.atan2(left_sticky_y(), left_sticky_x())+offset;
         double rotateVelocity = right_sticky_x();
 
         double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
+        double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
+        double Vrf = (magnitude * Math.sin(angle +(Math.PI/4))-rotateVelocity);
+        double Vrb = (magnitude * Math.cos(angle +(Math.PI/4))-rotateVelocity);
+
+        leftFront.setPower(Vlf);
+        leftBack.setPower(Vlb);
+        rightFront.setPower(Vrf);
+        rightBack.setPower(Vrb);
+
+        telemetry.addData("lf", Vlf);
+        telemetry.addData("lb", Vlb);
+        telemetry.addData("rf", Vrf);
+        telemetry.addData("rb", Vrb);
     }
 
     public void stopper(){
@@ -222,7 +240,14 @@ public class ParentOpMode extends LinearOpMode {
 
     /*****************************/
     //More Methods (Functions)
+    public void Taker(){
+        double inTaker = intake_trigger();
+        double outTaker = outtake_trigger();
 
+        if (inTaker > 0.15) {
+            Intake.setPower(inTaker);
+        }
+    }
 
 
     /*****************************/
@@ -231,9 +256,7 @@ public class ParentOpMode extends LinearOpMode {
     /*****************************/
     //Encoder Functions
    /*
-    public double getLeftVerticalEncoder(){
-        return rightFront.getCurrentPosition();
-    }
+
     */
 
     /*****************************/
