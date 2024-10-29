@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -73,13 +74,17 @@ public class ParentOpMode extends LinearOpMode {
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
     private DcMotor Intake = null;
-
+    private DcMotor lift = null;
     // Sensor Items
+
+    private DigitalChannel bottomLimitSwitch = null;
 
     SparkFunOTOS OdometrySensor;
 
     //Other Global Variables
     SparkFunOTOS.Pose2D pos;
+
+    int liftTargetPosition;
 
     public void initialize(){
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -90,11 +95,13 @@ public class ParentOpMode extends LinearOpMode {
         leftFront = hardwareMap.get(DcMotor.class,"lf_drive");
         leftBack = hardwareMap.get(DcMotor.class, "lb_drive");
         Intake = hardwareMap.get(DcMotor.class, "Intake");
+        lift = hardwareMap.get(DcMotor.class, "lift");
 
         //Sensors
+        bottomLimitSwitch = hardwareMap.get(DigitalChannel.class, "bottom_limit");
+
         OdometrySensor = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         configureOtos();
-
 
         //Set motor run mode (if using SPARK Mini motor controllers)
 
@@ -105,6 +112,7 @@ public class ParentOpMode extends LinearOpMode {
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         Intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        lift.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Set brake or coast modes.
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //BRAKE or FLOAT (Coast)
@@ -112,6 +120,7 @@ public class ParentOpMode extends LinearOpMode {
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Update Driver Station Status Message after init
         telemetry.addData("Status:", "Initialized");
@@ -234,6 +243,31 @@ public class ParentOpMode extends LinearOpMode {
         telemetry.addData("rb", Vrb);
     }
 
+    public void holonomicFieldCentric (){
+        double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
+        double robotHead = getAngler();
+        double offset = Math.toRadians(-90+robotHead);
+        double angle = Math.atan2(left_sticky_y(), left_sticky_x())+offset;
+        double rotateVelocity = right_sticky_x();
+
+        double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
+        double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
+        double Vrf = (magnitude * Math.sin(angle +(Math.PI/4))-rotateVelocity);
+        double Vrb = (magnitude * Math.cos(angle +(Math.PI/4))-rotateVelocity);
+
+        leftFront.setPower(Vlf);
+        leftBack.setPower(Vlb);
+        rightFront.setPower(Vrf);
+        rightBack.setPower(Vrb);
+
+        telemetry.addData("lf", Vlf);
+        telemetry.addData("lb", Vlb);
+        telemetry.addData("rf", Vrf);
+        telemetry.addData("rb", Vrb);
+        telemetry.addData("angle", robotHead);
+    }
+
+
     public void stopper(){
         tankDrive(0,0);
     }
@@ -242,11 +276,21 @@ public class ParentOpMode extends LinearOpMode {
     //More Methods (Functions)
     public void Taker(){
         double inTaker = intake_trigger();
-        double outTaker = outtake_trigger();
+        double outTaker = -outtake_trigger();
 
         if (inTaker > 0.15) {
             Intake.setPower(inTaker);
         }
+        else{
+            if (outTaker > 0.15) {
+                Intake.setPower(outTaker);
+            }
+
+            else {
+                Intake.setPower(0);
+            }
+        }
+
     }
 
 
@@ -368,5 +412,20 @@ public class ParentOpMode extends LinearOpMode {
         telemetry.addData("xylophone",Xvalue);
         telemetry.addData("yttrium",Yvalue);
         telemetry.addData("protractor",angle);
+    }
+
+    public double getAngler() {
+        double angle;
+
+        pos = OdometrySensor.getPosition();
+
+        angle = pos.h;
+        return angle;
+    }
+
+    //place the lift functions below
+
+    public int getLiftPosition(){
+
     }
 }

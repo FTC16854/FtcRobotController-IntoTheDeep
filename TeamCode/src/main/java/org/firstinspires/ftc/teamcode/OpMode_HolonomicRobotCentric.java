@@ -80,6 +80,7 @@ public class OpMode_HolonomicRobotCentric extends ParentOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             holonomic();
+            Taker();
 
             checkEmergencyStop();
             telemetry.update();

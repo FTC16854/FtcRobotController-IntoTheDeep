@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
@@ -53,9 +52,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * override the ParentOpMode runOpMode() method.
  **/
 
-@TeleOp(name="Tank Drive", group="Linear Opmode")
+@TeleOp(name="Robot Centric", group="Linear Opmode")
 //@Disabled
-public class OpMode_TankDrive extends ParentOpMode {
+public class OpMode_HolonomicFieldCentric extends ParentOpMode {
 
 
 
@@ -80,7 +79,7 @@ public class OpMode_TankDrive extends ParentOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            tankDrive(left_sticky_y(),right_sticky_y());
+            holonomicFieldCentric();
             Taker();
 
             checkEmergencyStop();
