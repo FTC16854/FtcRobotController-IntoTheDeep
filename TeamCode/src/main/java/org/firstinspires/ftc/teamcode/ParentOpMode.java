@@ -426,6 +426,21 @@ public class ParentOpMode extends LinearOpMode {
     //place the lift functions below
 
     public int getLiftPosition(){
+        return lift.getCurrentPosition();
+    }
 
+    public void setLift0(){
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public boolean liftAtBottom(){
+        return bottomLimitSwitch.getState();
+    }
+
+    public void hominglift(){
+        while(liftAtBottom()){
+            lift.setPower(-0.3);
+        }
+        //NEED TO FINISH!!!
     }
 }
