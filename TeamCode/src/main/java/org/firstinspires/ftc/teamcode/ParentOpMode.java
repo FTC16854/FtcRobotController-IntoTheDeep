@@ -72,6 +72,7 @@ public class ParentOpMode extends LinearOpMode {
     private DcMotor rightFront = null;
     private DcMotor rightBack = null;
     private DcMotor leftFront = null;
+
     private DcMotor leftBack = null;
     private DcMotor Intake = null;
     private DcMotor lift = null;
@@ -84,7 +85,17 @@ public class ParentOpMode extends LinearOpMode {
     //Other Global Variables
     SparkFunOTOS.Pose2D pos;
 
-    int liftTargetPosition;
+    //Lift Positions
+    int liftBottom = 0;
+    int lowBasket = 18000;
+    int highBasket = 36000;
+    int liftTop = 48000;
+    int targetLiftPos = liftBottom;
+
+    //Extension Positions
+    int ExtensionIn = 0;
+    int ExtensionOut = 48000;
+    int targetExtensionPos = ExtensionIn;
 
     public void initialize(){
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -181,8 +192,13 @@ public class ParentOpMode extends LinearOpMode {
     // Buttons
     public boolean emergencyButtons(){
         // check for combination of buttons to be pressed before returning true
-        return gamepad1.y && gamepad1.x;
+        return (gamepad1.y && gamepad1.x) || (gamepad2.y && gamepad2.x);
     }
+    public boolean buttonLiftUp() { return  gamepad1.right_bumper;}
+    public boolean buttonLiftDown() { return gamepad1.left_bumper;}
+    public boolean buttonLiftBottom() { return gamepad1.x;}
+    public boolean buttonLiftHigh() { return gamepad1.y;}
+    public boolean buttonLiftLow() { return gamepad1.a;}
     public double outtake_trigger() { return gamepad1.left_trigger;}
     public double intake_trigger() { return gamepad1.right_trigger;}
 
@@ -438,9 +454,63 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public void hominglift(){
-        while(liftAtBottom()){
+        while(!liftAtBottom()){
             lift.setPower(-0.3);
         }
-        //NEED TO FINISH!!!
+        lift.setPower(0);
+        setLift0();
     }
+    public void goToPosLift(int Pos){
+        double speed;
+        speed =0.7;
+        lift.setTargetPosition(Pos);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(speed);
+    }
+
+    public void setLiftPos(){
+
+        int smallMargin;
+
+        smallMargin = 257;
+
+        if(buttonLiftDown()){
+            targetLiftPos = getLiftPosition() - smallMargin;
+        }
+
+        if(buttonLiftUp()){
+            targetLiftPos = getLiftPosition() + smallMargin;
+        }
+
+        if(buttonLiftBottom()) {
+            targetLiftPos = liftBottom;
+        }
+
+        if(buttonLiftHigh()) {
+            targetLiftPos = highBasket;
+        }
+
+        if(buttonLiftLow()) {
+            targetLiftPos = lowBasket;
+        }
+
+
+        if(targetLiftPos < liftBottom) {
+            targetLiftPos = liftBottom;
+        }
+
+        if(targetLiftPos > liftTop) {
+            targetLiftPos = liftTop;
+        }
+
+        goToPosLift(targetLiftPos);
+    }
+
+    //TODO
+    //  Extension stuff
+    //      Buttons
+    //      Go To Positions
+    //      Auto/Manual Functions
+
+
 }
