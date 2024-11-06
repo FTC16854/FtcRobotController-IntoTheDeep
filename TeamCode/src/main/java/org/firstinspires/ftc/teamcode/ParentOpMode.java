@@ -76,9 +76,11 @@ public class ParentOpMode extends LinearOpMode {
     private DcMotor leftBack = null;
     private DcMotor Intake = null;
     private DcMotor lift = null;
+    private DcMotor extension = null;
     // Sensor Items
 
     private DigitalChannel bottomLimitSwitch = null;
+    private DigitalChannel inwardsLimitSwitch = null;
 
     SparkFunOTOS OdometrySensor;
 
@@ -201,6 +203,8 @@ public class ParentOpMode extends LinearOpMode {
     public boolean buttonLiftLow() { return gamepad1.a;}
     public double outtake_trigger() { return gamepad1.left_trigger;}
     public double intake_trigger() { return gamepad1.right_trigger;}
+    public boolean buttonExtensionOut() { return gamepad2.y;}
+    public boolean buttonExtensionIn() { return gamepad2.x;}
 
     public boolean triggerButton(){
         if(gamepad1.right_trigger>.25){
@@ -460,6 +464,7 @@ public class ParentOpMode extends LinearOpMode {
         lift.setPower(0);
         setLift0();
     }
+
     public void goToPosLift(int Pos){
         double speed;
         speed =0.7;
@@ -506,11 +511,99 @@ public class ParentOpMode extends LinearOpMode {
         goToPosLift(targetLiftPos);
     }
 
-    //TODO
-    //  Extension stuff
-    //      Buttons
-    //      Go To Positions
-    //      Auto/Manual Functions
 
 
+    public int getExtensionPosition(){
+        return extension.getCurrentPosition();
+    }
+
+    public void setExtension0(){
+        extension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public boolean extensionAtInside(){
+        return inwardsLimitSwitch.getState();
+    }
+
+    public void homingExtension(){
+        while(!extensionAtInside()){
+            extension.setPower(-0.3);
+        }
+        extension.setPower(0);
+        setExtension0();
+    }
+
+    public void goToPosExtension(int Pos){
+        double speed;
+        speed =0.7;
+        extension.setTargetPosition(Pos);
+        extension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extension.setPower(speed);
+    }
+
+    public void setExtensionPos(){
+
+        int smallMargin;
+
+        smallMargin = 257;
+/*
+        if(()){
+            targetLiftPos = getLiftPosition() - smallMargin;
+        }
+
+        if(buttonLiftUp()){
+            targetLiftPos = getLiftPosition() + smallMargin;
+        }
+*/
+        if(buttonExtensionIn()) {
+            targetExtensionPos = ExtensionIn;
+        }
+
+
+        if(targetExtensionPos < ExtensionIn) {
+            targetExtensionPos = ExtensionIn;
+        }
+
+        if(targetExtensionPos > ExtensionOut) {
+            targetExtensionPos = ExtensionOut;
+        }
+
+        goToPosExtension(targetExtensionPos);
+    }
+
+    // autonomous functions below
+
+    public void autoIntake() {
+        Intake.setPower(0.7);
+    }
+
+    public void autoOutake() {
+        Intake.setPower(-0.5);
+    }
+
+    public void autoIntakeStop() {
+        Intake.setPower(0);
+    }
+
+    public void autoHolonomicFieldCentric (double magnitude, double angle, double rotateVelocity){
+        double robotHead = getAngler();
+        double offset = Math.toRadians(-90+robotHead);
+        angle = angle+offset;
+
+        double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
+        double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
+        double Vrf = (magnitude * Math.sin(angle +(Math.PI/4))-rotateVelocity);
+        double Vrb = (magnitude * Math.cos(angle +(Math.PI/4))-rotateVelocity);
+
+        leftFront.setPower(Vlf);
+        leftBack.setPower(Vlb);
+        rightFront.setPower(Vrf);
+        rightBack.setPower(Vrb);
+
+        telemetry.addData("lf", Vlf);
+        telemetry.addData("lb", Vlb);
+        telemetry.addData("rf", Vrf);
+        telemetry.addData("rb", Vrb);
+        telemetry.addData("angle", robotHead);
+    }
 }
