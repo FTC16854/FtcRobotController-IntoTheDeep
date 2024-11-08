@@ -588,7 +588,7 @@ public class ParentOpMode extends LinearOpMode {
     public void autoHolonomicFieldCentric (double magnitude, double angle, double rotateVelocity){
         double robotHead = getAngler();
         double offset = Math.toRadians(-90+robotHead);
-        angle = angle+offset;
+        angle = Math.toRadians(angle)+offset;
 
         double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
         double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
@@ -605,5 +605,28 @@ public class ParentOpMode extends LinearOpMode {
         telemetry.addData("rf", Vrf);
         telemetry.addData("rb", Vrb);
         telemetry.addData("angle", robotHead);
+    }
+
+    public void autorotate (double targetAngle, double speed) {
+        double breakPoint = 3;
+        while (true) {
+            if (getAngler()>targetAngle) {
+                autoHolonomicFieldCentric(0,0,-speed);
+            } else {
+                autoHolonomicFieldCentric(0, 0, speed);
+            }
+            if (getAngler()<targetAngle+breakPoint && getAngler()>targetAngle-breakPoint) {
+                stopper();
+                break;
+            }
+
+            telemetry.update();
+        }
+    }
+
+    public void timedAutoHolonomicFieldCentric (double magnitude, double angle, long milliTime){
+        autoHolonomicFieldCentric(magnitude,angle,0);
+        sleep (milliTime);
+        stopper();
     }
 }
