@@ -69,12 +69,11 @@ public class ParentOpMode extends LinearOpMode {
     // Declare OpMode members, hardware variables
     public ElapsedTime runtime = new ElapsedTime();
 
-    private DcMotor rightFront = null;
+    private DcMotorSimple rightFront = null;
     private DcMotor rightBack = null;
     private DcMotor leftFront = null;
-
-    private DcMotor leftBack = null;
-    private DcMotor Intake = null;
+    private DcMotorSimple leftBack = null;
+    private DcMotorSimple Intake = null;
     private DcMotor lift = null;
     private DcMotor extension = null;
     // Sensor Items
@@ -103,15 +102,17 @@ public class ParentOpMode extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Driver Station app or Driver Hub).
-        rightFront = hardwareMap.get(DcMotor.class, "rf_drive");
+        rightFront = hardwareMap.get(DcMotorSimple.class, "rf_drive");
         rightBack = hardwareMap.get(DcMotor.class, "rb_drive");
         leftFront = hardwareMap.get(DcMotor.class,"lf_drive");
-        leftBack = hardwareMap.get(DcMotor.class, "lb_drive");
-        Intake = hardwareMap.get(DcMotor.class, "Intake");
+        leftBack = hardwareMap.get(DcMotorSimple.class, "lb_drive");
+        Intake = hardwareMap.get(DcMotorSimple.class, "Intake");
         lift = hardwareMap.get(DcMotor.class, "lift");
+        extension = hardwareMap.get(DcMotor.class, "extension");
 
         //Sensors
         bottomLimitSwitch = hardwareMap.get(DigitalChannel.class, "bottom_limit");
+        inwardsLimitSwitch = hardwareMap.get(DigitalChannel.class, "Inward_limit");
 
         OdometrySensor = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         configureOtos();
@@ -127,12 +128,14 @@ public class ParentOpMode extends LinearOpMode {
         Intake.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //Set brake or coast modes.
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //BRAKE or FLOAT (Coast)
+        //Set brake or coast modes
+        // (NOTE: SPARK MINI MOTOR CONTROLLER SWITCHES MUST BE SET TO SAME AS DRIVE MOTOR CONFIGS)
+        // BRAKE or FLOAT (Coast)
+        //rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Update Driver Station Status Message after init

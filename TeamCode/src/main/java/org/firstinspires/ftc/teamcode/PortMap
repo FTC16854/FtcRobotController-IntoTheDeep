@@ -1,20 +1,23 @@
 Control Hub
-Motor Ports                    Configuration Names          color
-    0   LB Motor                lb_drive
-    1   FL Motor                lf_drive
-    2   FR Motor                rf_drive
-    3   RB Motor                rb_drive
+Motor Ports                    Configuration Names          Color
+    0   FL Motor                lf_drive                    purple
+    1   extension               extension                   pink
+    2   RB Motor                rb_drive                    blue
+    3   lift                    lift
 
 Servo Ports
-    0
-    1
-    2
+    0   LB Motor                lb_drive                    red
+    1   FR Motor                rf_drive                    orange
+    2   InTake                  Intake                      yellow
     3
     4
     5
 
 Digital Channels
-    0
+    0   inwardsLimitSwitch     Inward_limit                 gold
+    1
+    2   bottomLimitSwitch      bottom_limit                 aqua
+    3
 
 I2C Ports
     Bus 0                   imu
