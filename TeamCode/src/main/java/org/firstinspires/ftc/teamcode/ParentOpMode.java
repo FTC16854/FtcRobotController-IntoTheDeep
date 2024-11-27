@@ -87,6 +87,7 @@ public class ParentOpMode extends LinearOpMode {
     SparkFunOTOS.Pose2D pos;
 
     //Lift Positions
+    int MinHeightLimitForExtension = 15624;
     int liftBottom = 0;
     int lowBasket = 18000;
     int highBasket = 36000;
@@ -94,8 +95,10 @@ public class ParentOpMode extends LinearOpMode {
     int targetLiftPos = liftBottom;
 
     //Extension Positions
+    int ExtensionLimitBelow = 17564;
     int ExtensionIn = 0;
-    int ExtensionOut = 48000;
+    int ExtensionMid = 24000;
+    int ExtensionOutLimit = 48000;
     int targetExtensionPos = ExtensionIn;
 
     public void initialize(){
@@ -126,7 +129,9 @@ public class ParentOpMode extends LinearOpMode {
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         Intake.setDirection(DcMotorSimple.Direction.FORWARD);
-        lift.setDirection(DcMotorSimple.Direction.FORWARD);
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
+        // is not known if accurate
+        extension.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Set brake or coast modes
         // (NOTE: SPARK MINI MOTOR CONTROLLER SWITCHES MUST BE SET TO SAME AS DRIVE MOTOR CONFIGS)
@@ -207,7 +212,10 @@ public class ParentOpMode extends LinearOpMode {
     public double outtake_trigger() { return gamepad1.left_trigger;}
     public double intake_trigger() { return gamepad1.right_trigger;}
     public boolean buttonExtensionOut() { return gamepad2.y;}
+    public boolean buttonExtensionMid() { return  gamepad2.a;}
     public boolean buttonExtensionIn() { return gamepad2.x;}
+    public boolean buttonExtensionForward() { return gamepad2.left_bumper;}
+    public boolean buttonExtensionBackward() { return gamepad2.right_bumper;}
 
     public boolean triggerButton(){
         if(gamepad1.right_trigger>.25){
@@ -457,7 +465,7 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public boolean liftAtBottom(){
-        return bottomLimitSwitch.getState();
+        return !bottomLimitSwitch.getState();
     }
 
     public void hominglift(){
@@ -545,23 +553,38 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public void setExtensionPos(){
-
         int smallMargin;
+        int ExtensionOut;
 
+        ExtensionOut=ExtensionOutLimit;
         smallMargin = 257;
-/*
-        if(()){
-            targetLiftPos = getLiftPosition() - smallMargin;
+
+        if (getLiftPosition()<MinHeightLimitForExtension){
+            ExtensionOut = ExtensionLimitBelow;
         }
 
-        if(buttonLiftUp()){
-            targetLiftPos = getLiftPosition() + smallMargin;
+
+        if(buttonExtensionBackward()){
+            targetExtensionPos = getExtensionPosition() - smallMargin;
         }
-*/
+
+        if(buttonExtensionForward()){
+            targetExtensionPos = getExtensionPosition() + smallMargin;
+        }
+
+
+
         if(buttonExtensionIn()) {
             targetExtensionPos = ExtensionIn;
         }
 
+        if (buttonExtensionMid()) {
+            targetLiftPos = ExtensionMid;
+        }
+
+        if (buttonExtensionOut()) {
+            targetLiftPos = ExtensionOut;
+        }
 
         if(targetExtensionPos < ExtensionIn) {
             targetExtensionPos = ExtensionIn;
@@ -580,7 +603,7 @@ public class ParentOpMode extends LinearOpMode {
         Intake.setPower(0.7);
     }
 
-    public void autoOutake() {
+    public void autoOuttake() {
         Intake.setPower(-0.5);
     }
 
