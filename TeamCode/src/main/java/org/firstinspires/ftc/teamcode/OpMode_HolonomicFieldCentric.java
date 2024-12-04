@@ -83,6 +83,8 @@ public class OpMode_HolonomicFieldCentric extends ParentOpMode {
         while (opModeIsActive()) {
             holonomicFieldCentric();
             Taker();
+            setExtensionPos();
+            setLiftPos();
 
             checkEmergencyStop();
             telemetry.update();
