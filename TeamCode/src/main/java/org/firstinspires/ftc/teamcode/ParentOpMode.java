@@ -469,7 +469,7 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public void hominglift(){
-        while(!liftAtBottom()){
+        while(!liftAtBottom() && opModeIsActive()){
             lift.setPower(-0.3);
         }
         lift.setPower(0);
@@ -537,7 +537,7 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public void homingExtension(){
-        while(!extensionAtInside()){
+        while(!extensionAtInside() && opModeIsActive()){
             extension.setPower(-0.3);
         }
         extension.setPower(0);
@@ -635,7 +635,7 @@ public class ParentOpMode extends LinearOpMode {
 
     public void autorotate (double targetAngle, double speed) {
         double breakPoint = 3;
-        while (true) {
+        while (true && opModeIsActive()) {
             if (getAngler()>targetAngle) {
                 autoHolonomicFieldCentric(0,0,-speed);
             } else {
@@ -655,4 +655,44 @@ public class ParentOpMode extends LinearOpMode {
         sleep (milliTime);
         stopper();
     }
+
+
+    // Test Functions
+    public void displayPositionTelemetry(){
+        telemetry.addData("Lift at Bottom:",liftAtBottom());
+        telemetry.addData("Extension Retracted:",extensionAtInside());
+        telemetry.addData("Lift Position:",getLiftPosition());
+        telemetry.addData("Extension Position:",getExtensionPosition());
+    }
+
+    public void manualLiftAndExtension(){
+        double liftPower = 0.3;
+        double extensionPower = 0.3;
+
+        if(buttonLiftUp()){
+            lift.setPower(liftPower);
+        }
+        else{
+            if(buttonLiftDown()){
+                lift.setPower((-liftPower));
+            }
+            else{
+                lift.setPower(0);
+            }
+        }
+
+        if(buttonExtensionForward()){
+            extension.setPower(extensionPower);
+        }
+        else{
+            if(buttonExtensionBackward()){
+                extension.setPower(-extensionPower);
+            }
+            else{
+                extension.setPower(0);
+            }
+        }
+
+    }
+
 }
