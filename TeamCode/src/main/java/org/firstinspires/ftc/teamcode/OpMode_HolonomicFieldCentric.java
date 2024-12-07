@@ -81,10 +81,12 @@ public class OpMode_HolonomicFieldCentric extends ParentOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            holonomicFieldCentric();
+
             Taker();
             setExtensionPos();
             setLiftPos();
+
+            holonomicFieldCentric();
 
             checkEmergencyStop();
 
