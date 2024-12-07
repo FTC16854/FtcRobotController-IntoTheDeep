@@ -580,11 +580,11 @@ public class ParentOpMode extends LinearOpMode {
         }
 
         if (buttonExtensionMid()) {
-            targetLiftPos = ExtensionMid;
+            targetExtensionPos = ExtensionMid;
         }
 
         if (buttonExtensionOut()) {
-            targetLiftPos = ExtensionOut;
+            targetExtensionPos = ExtensionOut;
         }
 
         if(targetExtensionPos < ExtensionIn) {
