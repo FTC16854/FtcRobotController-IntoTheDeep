@@ -16,8 +16,8 @@ Servo Ports
 Digital Channels
     0   inwardsLimitSwitch     Inward_limit                 gold
     1
-    2   bottomLimitSwitch      bottom_limit                 aqua
-    3
+    2
+    3   bottomLimitSwitch      bottom_limit                 aqua
 
 I2C Ports
     Bus 0                   imu

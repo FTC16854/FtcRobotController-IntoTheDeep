@@ -87,6 +87,8 @@ public class OpMode_HolonomicRobotCentric extends ParentOpMode {
             setLiftPos();
 
             checkEmergencyStop();
+
+            displayPositionTelemetry();
             telemetry.update();
         }
     }

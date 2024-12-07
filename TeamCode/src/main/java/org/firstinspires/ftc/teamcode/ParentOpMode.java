@@ -87,11 +87,11 @@ public class ParentOpMode extends LinearOpMode {
     SparkFunOTOS.Pose2D pos;
 
     //Lift Positions
-    int MinHeightLimitForExtension = 15624;
+    int MinHeightLimitForExtension = 1564;
     int liftBottom = 0;
-    int lowBasket = 18000;
-    int highBasket = 36000;
-    int liftTop = 48000;
+    int lowBasket = 1800;
+    int highBasket = 3600;
+    int liftTop = 9600;
     int targetLiftPos = liftBottom;
 
     //Extension Positions
@@ -125,9 +125,9 @@ public class ParentOpMode extends LinearOpMode {
 
         //Set Motor  and servo Directions
         rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
         leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
         Intake.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
         // is not known if accurate
@@ -254,7 +254,7 @@ public class ParentOpMode extends LinearOpMode {
 
     public void holonomic(){
         double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
-        double offset = Math.toRadians(-90);
+        double offset = Math.toRadians(0);
         double angle = Math.atan2(left_sticky_y(), left_sticky_x())+offset;
         double rotateVelocity = right_sticky_x();
 
@@ -277,7 +277,7 @@ public class ParentOpMode extends LinearOpMode {
     public void holonomicFieldCentric (){
         double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
         double robotHead = getAngler();
-        double offset = Math.toRadians(-90+robotHead);
+        double offset = Math.toRadians(robotHead);
         double angle = Math.atan2(left_sticky_y(), left_sticky_x())+offset;
         double rotateVelocity = right_sticky_x();
 
@@ -307,14 +307,14 @@ public class ParentOpMode extends LinearOpMode {
     //More Methods (Functions)
     public void Taker(){
         double inTaker = intake_trigger();
-        double outTaker = -outtake_trigger();
+        double outTaker = outtake_trigger();
 
         if (inTaker > 0.15) {
             Intake.setPower(inTaker);
         }
         else{
             if (outTaker > 0.15) {
-                Intake.setPower(outTaker);
+                Intake.setPower(-outTaker);
             }
 
             else {
@@ -465,12 +465,14 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public boolean liftAtBottom(){
-        return !bottomLimitSwitch.getState();
+        return bottomLimitSwitch.getState();
     }
 
     public void hominglift(){
-        while(!liftAtBottom() && opModeIsActive()){
+        while(!liftAtBottom() && opModeInInit()){
             lift.setPower(-0.3);
+            telemetry.addData("homing lift","");
+            telemetry.update();
         }
         lift.setPower(0);
         setLift0();
@@ -533,12 +535,14 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public boolean extensionAtInside(){
-        return inwardsLimitSwitch.getState();
+        return !inwardsLimitSwitch.getState();
     }
 
     public void homingExtension(){
-        while(!extensionAtInside() && opModeIsActive()){
+        while(!extensionAtInside() && opModeInInit()){
             extension.setPower(-0.3);
+            telemetry.addData("homing extension","");
+            telemetry.update();
         }
         extension.setPower(0);
         setExtension0();
@@ -563,7 +567,6 @@ public class ParentOpMode extends LinearOpMode {
             ExtensionOut = ExtensionLimitBelow;
         }
 
-
         if(buttonExtensionBackward()){
             targetExtensionPos = getExtensionPosition() - smallMargin;
         }
@@ -571,8 +574,6 @@ public class ParentOpMode extends LinearOpMode {
         if(buttonExtensionForward()){
             targetExtensionPos = getExtensionPosition() + smallMargin;
         }
-
-
 
         if(buttonExtensionIn()) {
             targetExtensionPos = ExtensionIn;
@@ -666,6 +667,9 @@ public class ParentOpMode extends LinearOpMode {
     }
 
     public void manualLiftAndExtension(){
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        extension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         double liftPower = 0.3;
         double extensionPower = 0.3;
 

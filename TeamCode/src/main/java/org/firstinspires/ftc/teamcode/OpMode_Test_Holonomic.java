@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * override the ParentOpMode runOpMode() method.
  **/
 
-@TeleOp(name="Robot Centric", group="Linear Opmode")
+@TeleOp(name="Test Holonomic", group="Linear Opmode")
 //@Disabled
 public class OpMode_Test_Holonomic extends ParentOpMode {
 

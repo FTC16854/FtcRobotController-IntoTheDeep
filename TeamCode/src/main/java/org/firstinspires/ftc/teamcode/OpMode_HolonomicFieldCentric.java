@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * override the ParentOpMode runOpMode() method.
  **/
 
-@TeleOp(name="Robot Centric", group="Linear Opmode")
+@TeleOp(name="Field Centric", group="Linear Opmode")
 //@Disabled
 public class OpMode_HolonomicFieldCentric extends ParentOpMode {
 
@@ -87,6 +87,8 @@ public class OpMode_HolonomicFieldCentric extends ParentOpMode {
             setLiftPos();
 
             checkEmergencyStop();
+
+            displayPositionTelemetry();
             telemetry.update();
         }
     }
