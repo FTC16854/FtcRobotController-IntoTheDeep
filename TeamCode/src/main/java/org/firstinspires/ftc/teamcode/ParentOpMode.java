@@ -90,7 +90,7 @@ public class ParentOpMode extends LinearOpMode {
     int MinHeightLimitForExtension = 1564;
     int liftBottom = 0;
     int liftTop = 9500;
-    int lowBasket = 1800;
+    int lowBasket = 8800;
     int highBasket = liftTop; //3600;
     int targetLiftPos = liftBottom;
 
