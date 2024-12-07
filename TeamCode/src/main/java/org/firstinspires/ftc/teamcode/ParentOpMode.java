@@ -89,16 +89,16 @@ public class ParentOpMode extends LinearOpMode {
     //Lift Positions
     int MinHeightLimitForExtension = 1564;
     int liftBottom = 0;
+    int liftTop = 9500;
     int lowBasket = 1800;
-    int highBasket = 3600;
-    int liftTop = 9600;
+    int highBasket = liftTop; //3600;
     int targetLiftPos = liftBottom;
 
     //Extension Positions
-    int ExtensionLimitBelow = 17564;
     int ExtensionIn = 0;
     int ExtensionMid = 24000;
-    int ExtensionOutLimit = 48000;
+    int ExtensionOutLimit = 6700;
+    int ExtensionLimitBelow = 1000;
     int targetExtensionPos = ExtensionIn;
 
     public void initialize(){
