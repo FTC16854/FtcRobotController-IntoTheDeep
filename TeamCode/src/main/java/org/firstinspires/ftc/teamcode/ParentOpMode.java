@@ -87,7 +87,7 @@ public class ParentOpMode extends LinearOpMode {
     SparkFunOTOS.Pose2D pos;
 
     //Lift Positions
-    int MinHeightLimitForExtension = 6865;
+    int MinHeightLimitForExtension = 9000;
     int liftBottom = 655; // 0;
     int liftTop = 9500;
     int lowBasket = 8800;
@@ -96,9 +96,9 @@ public class ParentOpMode extends LinearOpMode {
 
     //Extension Positions
     int ExtensionIn = 0;
-    int ExtensionMid = 3350;
-    int ExtensionOutLimit = 9600;
-    int ExtensionLimitBelow = 7280;
+    int ExtensionMid = 3500;
+    int ExtensionOutLimit = 8000; //9600
+    int ExtensionLimitBelow = 6350;
     int targetExtensionPos = ExtensionIn;
 
     public void initialize(){
@@ -215,6 +215,7 @@ public class ParentOpMode extends LinearOpMode {
     public boolean buttonExtensionForward() { return gamepad2.left_bumper;}
     public boolean buttonExtensionBackward() { return gamepad2.right_bumper;}
 
+    public boolean FieldCentricReset() { return gamepad1.back;}
     public boolean triggerButton(){
         if(gamepad1.right_trigger>.25){
             return true;         // Converts analog triggers into digital button presses (booleans)
@@ -223,6 +224,8 @@ public class ParentOpMode extends LinearOpMode {
             return false;
         }
     }
+
+
 
 
     /****************************/
@@ -327,6 +330,10 @@ public class ParentOpMode extends LinearOpMode {
         rightFront.setPower(Vrf);
         rightBack.setPower(Vrb);
 
+        if (FieldCentricReset()) {
+            ZeroOtosSensor();
+        }
+
         telemetry.addData("lf", Vlf);
         telemetry.addData("lb", Vlb);
         telemetry.addData("rf", Vrf);
@@ -354,7 +361,7 @@ public class ParentOpMode extends LinearOpMode {
         }
         else{
             if (outTaker > 0.15) {
-                Intake.setPower(-outTaker);
+                Intake.setPower(-outTaker * 0.5);
             }
 
             else {
@@ -521,7 +528,7 @@ public class ParentOpMode extends LinearOpMode {
 
     public void goToPosLift(int Pos){
         double speed;
-        speed = 0.8;
+        speed = 0.65;
         lift.setTargetPosition(Pos);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(speed);
@@ -591,7 +598,7 @@ public class ParentOpMode extends LinearOpMode {
 
     public void goToPosExtension(int Pos){
         double speed;
-        speed =0.8;
+        speed =0.85;
         extension.setTargetPosition(Pos);
         extension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         extension.setPower(speed);
@@ -599,19 +606,18 @@ public class ParentOpMode extends LinearOpMode {
 
     public void setExtensionPos(){
         int smallMargin;
-        int ExtensionOut;
+        int ExtensionOutCurrentLimit;
 
-        ExtensionOut=ExtensionOutLimit;
+        ExtensionOutCurrentLimit=ExtensionOutLimit;
         smallMargin = 257;
 
         if (getLiftPosition()<MinHeightLimitForExtension){
-            ExtensionOut = ExtensionLimitBelow;
+            ExtensionOutCurrentLimit = ExtensionLimitBelow;
         }
 
         if(buttonExtensionBackward()){
             targetExtensionPos = getExtensionPosition() - smallMargin;
         }
-
         if(buttonExtensionForward()){
             targetExtensionPos = getExtensionPosition() + smallMargin;
         }
@@ -619,28 +625,25 @@ public class ParentOpMode extends LinearOpMode {
         if(buttonExtensionIn()) {
             targetExtensionPos = ExtensionIn;
         }
-
         if (buttonExtensionMid()) {
             targetExtensionPos = ExtensionMid;
         }
-
         if (buttonExtensionOut()) {
-            targetExtensionPos = ExtensionOut;
+            targetExtensionPos = ExtensionOutCurrentLimit;
         }
 
         if(targetExtensionPos < ExtensionIn) {
             targetExtensionPos = ExtensionIn;
         }
-
-        if(targetExtensionPos > ExtensionOut) {
-            targetExtensionPos = ExtensionOut;
+        if(targetExtensionPos > ExtensionOutCurrentLimit) {
+            targetExtensionPos = ExtensionOutCurrentLimit;
         }
 
+        telemetry.addData("current extension limit", ExtensionOutCurrentLimit);
         goToPosExtension(targetExtensionPos);
     }
 
     // autonomous functions below
-
     public void autoIntake() {
         Intake.setPower(0.7);
     }
@@ -653,10 +656,24 @@ public class ParentOpMode extends LinearOpMode {
         Intake.setPower(0);
     }
 
+
+    /*
+    double rotateVelocity = right_sticky_x();
+
+        double offset = Math.toRadians(90);
+        double robotHead = getAngler();
+
+        double angle = Math.atan2(left_sticky_y(), left_sticky_x()) - Math.toRadians(robotHead) - offset;
+        double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
+
+
+     */
     public void autoHolonomicFieldCentric (double magnitude, double angle, double rotateVelocity){
         double robotHead = getAngler();
-        double offset = Math.toRadians(-90+robotHead);
-        angle = Math.toRadians(angle)+offset;
+//        double offset = Math.toRadians(-90+robotHead);
+//        angle = Math.toRadians(angle)+offset;
+        double offset = Math.toRadians(-90);
+        angle = angle - Math.toRadians(robotHead) - offset;
 
         double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
         double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
