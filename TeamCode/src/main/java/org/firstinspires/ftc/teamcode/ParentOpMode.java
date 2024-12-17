@@ -87,8 +87,8 @@ public class ParentOpMode extends LinearOpMode {
     SparkFunOTOS.Pose2D pos;
 
     //Lift Positions
-    int MinHeightLimitForExtension = 1564;
-    int liftBottom = 0;
+    int MinHeightLimitForExtension = 9000;
+    int liftBottom = 655; // 0;
     int liftTop = 9500;
     int lowBasket = 8800;
     int highBasket = liftTop; //3600;
@@ -96,9 +96,9 @@ public class ParentOpMode extends LinearOpMode {
 
     //Extension Positions
     int ExtensionIn = 0;
-    int ExtensionMid = 24000;
-    int ExtensionOutLimit = 6700;
-    int ExtensionLimitBelow = 1000;
+    int ExtensionMid = 3500;
+    int ExtensionOutLimit = 8000; //9600
+    int ExtensionLimitBelow = 6350;
     int targetExtensionPos = ExtensionIn;
 
     public void initialize(){
@@ -125,8 +125,8 @@ public class ParentOpMode extends LinearOpMode {
 
         //Set Motor  and servo Directions
         rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         Intake.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -192,9 +192,7 @@ public class ParentOpMode extends LinearOpMode {
     //CONTROLLER MAP
 
     // Thumbsticks
-    public double left_sticky_x(){
-        return gamepad1.left_stick_x;
-    }
+    public double left_sticky_x(){ return gamepad1.left_stick_x;}
     public double left_sticky_y() { return -gamepad1.left_stick_y;}
     public double right_sticky_y() { return -gamepad1.right_stick_y;}
     public double right_sticky_x() { return  gamepad1.right_stick_x;}
@@ -217,6 +215,7 @@ public class ParentOpMode extends LinearOpMode {
     public boolean buttonExtensionForward() { return gamepad2.left_bumper;}
     public boolean buttonExtensionBackward() { return gamepad2.right_bumper;}
 
+    public boolean FieldCentricReset() { return gamepad1.back;}
     public boolean triggerButton(){
         if(gamepad1.right_trigger>.25){
             return true;         // Converts analog triggers into digital button presses (booleans)
@@ -225,6 +224,8 @@ public class ParentOpMode extends LinearOpMode {
             return false;
         }
     }
+
+
 
 
     /****************************/
@@ -245,6 +246,13 @@ public class ParentOpMode extends LinearOpMode {
     // Assign left and right drive speed using arguments/parameters rather than hardcoding
     // thumb stick values inside function body. This will allow tank drive to be reused for
     // autonomous programs without additional work
+//    public void tankDrive(double left, double right){
+//        leftFront.setPower(left);
+//        leftBack.setPower(left);
+//        rightFront.setPower(right);
+//        rightBack.setPower(right);
+//    }
+
     public void tankDrive(double left, double right){
         leftFront.setPower(left);
         leftBack.setPower(left);
@@ -252,16 +260,17 @@ public class ParentOpMode extends LinearOpMode {
         rightBack.setPower(right);
     }
 
+
     public void holonomic(){
         double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
-        double offset = Math.toRadians(0);
-        double angle = Math.atan2(left_sticky_y(), left_sticky_x())+offset;
+        double offset = Math.toRadians(-90);
+        double angle = Math.atan2(left_sticky_y(), left_sticky_x()) + offset;
         double rotateVelocity = right_sticky_x();
 
-        double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
-        double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
-        double Vrf = (magnitude * Math.sin(angle +(Math.PI/4))-rotateVelocity);
-        double Vrb = (magnitude * Math.cos(angle +(Math.PI/4))-rotateVelocity);
+        double Vlf = (magnitude * Math.cos(angle + (Math.PI/4))+rotateVelocity);
+        double Vlb = (magnitude * Math.sin(angle + (Math.PI/4))+rotateVelocity);
+        double Vrf = (magnitude * Math.sin(angle + (Math.PI/4))-rotateVelocity);
+        double Vrb = (magnitude * Math.cos(angle + (Math.PI/4))-rotateVelocity);
 
         leftFront.setPower(Vlf);
         leftBack.setPower(Vlb);
@@ -274,12 +283,42 @@ public class ParentOpMode extends LinearOpMode {
         telemetry.addData("rb", Vrb);
     }
 
+//    public void holonomicFieldCentric (){
+//        double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
+//        double robotHead = getAngler();
+//        double offset = Math.toRadians(robotHead+90);
+//
+//        double angle = Math.atan2(left_sticky_y(), left_sticky_x()) + offset;
+//        double rotateVelocity = right_sticky_x();
+//
+//        double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
+//        double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
+//        double Vrf = (magnitude * Math.sin(angle +(Math.PI/4))-rotateVelocity);
+//        double Vrb = (magnitude * Math.cos(angle +(Math.PI/4))-rotateVelocity);
+//
+//        leftFront.setPower(Vlf);
+//        leftBack.setPower(Vlb);
+//        rightFront.setPower(Vrf);
+//        rightBack.setPower(Vrb);
+//
+//        telemetry.addData("lf", Vlf);
+//        telemetry.addData("lb", Vlb);
+//        telemetry.addData("rf", Vrf);
+//        telemetry.addData("rb", Vrb);
+//
+//
+//        telemetry.addData("robot heading", robotHead);
+//        telemetry.addData("drive angle", Math.toDegrees(angle));
+//    }
+
     public void holonomicFieldCentric (){
-        double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
-        double robotHead = getAngler();
-        double offset = Math.toRadians(robotHead);
-        double angle = Math.atan2(left_sticky_y(), left_sticky_x())+offset;
         double rotateVelocity = right_sticky_x();
+
+        double offset = Math.toRadians(90);
+        double robotHead = getAngler();
+
+        double angle = Math.atan2(left_sticky_y(), left_sticky_x()) - Math.toRadians(robotHead) - offset;
+        double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
 
         double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
         double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);
@@ -291,11 +330,19 @@ public class ParentOpMode extends LinearOpMode {
         rightFront.setPower(Vrf);
         rightBack.setPower(Vrb);
 
+        if (FieldCentricReset()) {
+            ZeroOtosSensor();
+        }
+
         telemetry.addData("lf", Vlf);
         telemetry.addData("lb", Vlb);
         telemetry.addData("rf", Vrf);
         telemetry.addData("rb", Vrb);
-        telemetry.addData("angle", robotHead);
+
+
+//        telemetry.addData("robot heading", robotHead);
+        telemetry.addData("robot heading", robotHead);
+        telemetry.addData("drive angle", Math.toDegrees(angle));
     }
 
 
@@ -314,7 +361,7 @@ public class ParentOpMode extends LinearOpMode {
         }
         else{
             if (outTaker > 0.15) {
-                Intake.setPower(-outTaker);
+                Intake.setPower(-outTaker * 0.5);
             }
 
             else {
@@ -450,6 +497,7 @@ public class ParentOpMode extends LinearOpMode {
 
         pos = OdometrySensor.getPosition();
 
+
         angle = pos.h;
         return angle;
     }
@@ -480,7 +528,7 @@ public class ParentOpMode extends LinearOpMode {
 
     public void goToPosLift(int Pos){
         double speed;
-        speed =0.7;
+        speed = 0.65;
         lift.setTargetPosition(Pos);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(speed);
@@ -550,7 +598,7 @@ public class ParentOpMode extends LinearOpMode {
 
     public void goToPosExtension(int Pos){
         double speed;
-        speed =0.7;
+        speed =0.85;
         extension.setTargetPosition(Pos);
         extension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         extension.setPower(speed);
@@ -558,19 +606,18 @@ public class ParentOpMode extends LinearOpMode {
 
     public void setExtensionPos(){
         int smallMargin;
-        int ExtensionOut;
+        int ExtensionOutCurrentLimit;
 
-        ExtensionOut=ExtensionOutLimit;
+        ExtensionOutCurrentLimit=ExtensionOutLimit;
         smallMargin = 257;
 
         if (getLiftPosition()<MinHeightLimitForExtension){
-            ExtensionOut = ExtensionLimitBelow;
+            ExtensionOutCurrentLimit = ExtensionLimitBelow;
         }
 
         if(buttonExtensionBackward()){
             targetExtensionPos = getExtensionPosition() - smallMargin;
         }
-
         if(buttonExtensionForward()){
             targetExtensionPos = getExtensionPosition() + smallMargin;
         }
@@ -578,28 +625,25 @@ public class ParentOpMode extends LinearOpMode {
         if(buttonExtensionIn()) {
             targetExtensionPos = ExtensionIn;
         }
-
         if (buttonExtensionMid()) {
             targetExtensionPos = ExtensionMid;
         }
-
         if (buttonExtensionOut()) {
-            targetExtensionPos = ExtensionOut;
+            targetExtensionPos = ExtensionOutCurrentLimit;
         }
 
         if(targetExtensionPos < ExtensionIn) {
             targetExtensionPos = ExtensionIn;
         }
-
-        if(targetExtensionPos > ExtensionOut) {
-            targetExtensionPos = ExtensionOut;
+        if(targetExtensionPos > ExtensionOutCurrentLimit) {
+            targetExtensionPos = ExtensionOutCurrentLimit;
         }
 
+        telemetry.addData("current extension limit", ExtensionOutCurrentLimit);
         goToPosExtension(targetExtensionPos);
     }
 
     // autonomous functions below
-
     public void autoIntake() {
         Intake.setPower(0.7);
     }
@@ -612,10 +656,24 @@ public class ParentOpMode extends LinearOpMode {
         Intake.setPower(0);
     }
 
+
+    /*
+    double rotateVelocity = right_sticky_x();
+
+        double offset = Math.toRadians(90);
+        double robotHead = getAngler();
+
+        double angle = Math.atan2(left_sticky_y(), left_sticky_x()) - Math.toRadians(robotHead) - offset;
+        double magnitude = Math.hypot(left_sticky_x(), left_sticky_y());
+
+
+     */
     public void autoHolonomicFieldCentric (double magnitude, double angle, double rotateVelocity){
         double robotHead = getAngler();
-        double offset = Math.toRadians(-90+robotHead);
-        angle = Math.toRadians(angle)+offset;
+//        double offset = Math.toRadians(-90+robotHead);
+//        angle = Math.toRadians(angle)+offset;
+        double offset = Math.toRadians(-90);
+        angle = angle - Math.toRadians(robotHead) - offset;
 
         double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
         double Vlb = (magnitude * Math.sin(angle +(Math.PI/4))+rotateVelocity);

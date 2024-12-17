@@ -73,6 +73,7 @@ public class OpMode_HolonomicFieldCentric extends ParentOpMode {
             // Code in here will loop continuously until OpMode is started
             homingExtension();
             hominglift();
+            telemetry.addData("Initialized",":)");
         }
 
         // Wait for the game to start (driver presses PLAY) - May not be needed if using an init Loop
@@ -81,10 +82,12 @@ public class OpMode_HolonomicFieldCentric extends ParentOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            holonomicFieldCentric();
+
             Taker();
             setExtensionPos();
             setLiftPos();
+
+            holonomicFieldCentric();
 
             checkEmergencyStop();
 

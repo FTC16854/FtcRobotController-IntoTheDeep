@@ -1,13 +1,13 @@
 Control Hub
 Motor Ports                    Configuration Names          Color
-    0   FL Motor                lf_drive                    purple
+    0   RB Motor                rb_drive                    blue
     1   extension               extension                   pink
-    2   RB Motor                rb_drive                    blue
+    2   FL Motor                lf_drive                    purple
     3   lift                    lift
 
 Servo Ports
-    0   LB Motor                lb_drive                    red
-    1   FR Motor                rf_drive                    orange
+    0   FR Motor                rf_drive                    orange
+    1   LB Motor                lb_drive                    red
     2   InTake                  Intake                      yellow
     3
     4

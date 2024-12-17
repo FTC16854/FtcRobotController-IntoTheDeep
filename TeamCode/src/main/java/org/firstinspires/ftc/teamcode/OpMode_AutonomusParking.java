@@ -29,7 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
  * Original FTC opmode header block
@@ -52,9 +52,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * override the ParentOpMode runOpMode() method.
  **/
 
-@TeleOp(name="Robot Centric", group="Linear Opmode")
+@Autonomous(name="Autonomus Parking program", group="Linear Opmode")
 //@Disabled
-public class OpMode_HolonomicRobotCentric extends ParentOpMode {
+public class OpMode_AutonomusParking extends ParentOpMode {
 
 
 
@@ -82,13 +82,9 @@ public class OpMode_HolonomicRobotCentric extends ParentOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            holonomic();
-            Taker();
-            setExtensionPos();
-            setLiftPos();
+            timedAutoHolonomicFieldCentric(0.3, 90, 3000);
 
             checkEmergencyStop();
-
             displayPositionTelemetry();
             telemetry.update();
         }
