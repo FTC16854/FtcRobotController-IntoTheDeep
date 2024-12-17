@@ -204,8 +204,8 @@ public class ParentOpMode extends LinearOpMode {
         // check for combination of buttons to be pressed before returning true
         return (gamepad1.y && gamepad1.x) || (gamepad2.y && gamepad2.x);
     }
-    public boolean buttonLiftUp() { return  gamepad1.right_bumper;}
-    public boolean buttonLiftDown() { return gamepad1.left_bumper;}
+    public boolean buttonLiftUp() { return  gamepad1.right_bumper||gamepad2.right_bumper;}
+    public boolean buttonLiftDown() { return gamepad1.left_bumper||gamepad2.left_bumper;}
     public boolean buttonLiftBottom() { return gamepad1.x;}
     public boolean buttonLiftHigh() { return gamepad1.y;}
     public boolean buttonLiftLow() { return gamepad1.a;}
