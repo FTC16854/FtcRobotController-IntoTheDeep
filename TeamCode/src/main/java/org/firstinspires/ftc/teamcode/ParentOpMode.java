@@ -202,8 +202,8 @@ public class ParentOpMode extends LinearOpMode {
         // check for combination of buttons to be pressed before returning true
         return (gamepad1.y && gamepad1.x) || (gamepad2.y && gamepad2.x);
     }
-    public boolean buttonLiftUp() { return  gamepad1.right_bumper||gamepad2.right_bumper;}
-    public boolean buttonLiftDown() { return gamepad1.left_bumper||gamepad2.left_bumper;}
+    public boolean buttonLiftUp() { return  gamepad1.right_bumper||gamepad2.right_trigger>0.4;}
+    public boolean buttonLiftDown() { return gamepad1.left_bumper||gamepad2.left_trigger>0.4;}
     public boolean buttonLiftBottom() { return gamepad1.x;}
     public boolean buttonLiftHigh() { return gamepad1.y;}
     public boolean buttonLiftLow() { return gamepad1.a;}
@@ -538,7 +538,7 @@ public class ParentOpMode extends LinearOpMode {
 
         int smallMargin;
 
-        smallMargin = 257;
+        smallMargin = 350;
 
         if(buttonLiftDown()){
             targetLiftPos = getLiftPosition() - smallMargin;
@@ -609,7 +609,7 @@ public class ParentOpMode extends LinearOpMode {
         int ExtensionOutCurrentLimit;
 
         ExtensionOutCurrentLimit=ExtensionOutLimit;
-        smallMargin = 257;
+        smallMargin = 350; //257
 
         if (getLiftPosition()<MinHeightLimitForExtension){
             ExtensionOutCurrentLimit = ExtensionLimitBelow;

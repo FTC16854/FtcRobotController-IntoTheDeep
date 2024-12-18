@@ -74,6 +74,8 @@ public class OpMode_TankDrive extends ParentOpMode {
             // Code in here will loop continuously until OpMode is started
             homingExtension();
             hominglift();
+            telemetry.addData("Initialized",":)");
+
         }
 
         // Wait for the game to start (driver presses PLAY) - May not be needed if using an init Loop
@@ -84,7 +86,10 @@ public class OpMode_TankDrive extends ParentOpMode {
         while (opModeIsActive()) {
             tankDrive(left_sticky_y(),right_sticky_y());
             Taker();
+            setExtensionPos();
+            setLiftPos();
 
+            displayPositionTelemetry();
             checkEmergencyStop();
             telemetry.update();
         }
