@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
@@ -89,7 +88,8 @@ public class OpMode_TankDrive extends ParentOpMode {
             setExtensionPos();
             setLiftPos();
 
-            displayPositionTelemetry();
+            displayLiftAndExtensionTelemetry();
+            displayPositionXAndY();
             checkEmergencyStop();
             telemetry.update();
         }

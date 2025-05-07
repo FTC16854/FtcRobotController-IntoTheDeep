@@ -502,6 +502,26 @@ public class ParentOpMode extends LinearOpMode {
         return angle;
     }
 
+    public double getPosX() {
+        double xAxis;
+
+        pos = OdometrySensor.getPosition();
+
+
+        xAxis = pos.x;
+        return xAxis;
+    }
+
+    public double getPosY() {
+        double yAxis;
+
+        pos = OdometrySensor.getPosition();
+
+
+        yAxis = pos.y;
+        return yAxis;
+    }
+
     //place the lift functions below
 
     public int getLiftPosition(){
@@ -716,12 +736,19 @@ public class ParentOpMode extends LinearOpMode {
     }
 
 
+
+
     // Test Functions
-    public void displayPositionTelemetry(){
+    public void displayLiftAndExtensionTelemetry(){
         telemetry.addData("Lift at Bottom:",liftAtBottom());
         telemetry.addData("Extension Retracted:",extensionAtInside());
         telemetry.addData("Lift Position:",getLiftPosition());
         telemetry.addData("Extension Position:",getExtensionPosition());
+    }
+
+    public void displayPositionXAndY(){
+        telemetry.addData("Pos X:", getPosX());
+        telemetry.addData("Pos Y:", getPosY());
     }
 
     public void manualLiftAndExtension(){

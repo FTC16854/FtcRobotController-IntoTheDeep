@@ -85,7 +85,8 @@ public class OpMode_AutonomusParking extends ParentOpMode {
             timedAutoHolonomicFieldCentric(0.3, 90, 3000);
 
             checkEmergencyStop();
-            displayPositionTelemetry();
+            displayLiftAndExtensionTelemetry();
+            displayPositionXAndY();
             telemetry.update();
         }
     }

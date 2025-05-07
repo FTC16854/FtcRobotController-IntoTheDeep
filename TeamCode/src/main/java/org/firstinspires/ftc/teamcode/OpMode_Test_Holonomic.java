@@ -85,8 +85,8 @@ public class OpMode_Test_Holonomic extends ParentOpMode {
             Taker();
 
             manualLiftAndExtension();
-            displayPositionTelemetry();
-
+            displayLiftAndExtensionTelemetry();
+            displayPositionXAndY();
             checkEmergencyStop();
             telemetry.update();
         }

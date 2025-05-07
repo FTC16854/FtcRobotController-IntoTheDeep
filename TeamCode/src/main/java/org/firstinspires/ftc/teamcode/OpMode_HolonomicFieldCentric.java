@@ -91,7 +91,8 @@ public class OpMode_HolonomicFieldCentric extends ParentOpMode {
 
             checkEmergencyStop();
 
-            displayPositionTelemetry();
+            displayLiftAndExtensionTelemetry();
+            displayPositionXAndY();
             telemetry.update();
         }
     }
