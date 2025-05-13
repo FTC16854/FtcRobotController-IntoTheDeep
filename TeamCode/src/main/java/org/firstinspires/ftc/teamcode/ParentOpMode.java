@@ -410,7 +410,7 @@ public class ParentOpMode extends LinearOpMode {
         // clockwise (negative rotation) from the robot's orientation, the offset
         // would be {-5, 10, -90}. These can be any value, even the angle can be
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 180);
         OdometrySensor.setOffset(offset);
 
         // Here we can set the linear and angular scalars, which can compensate for
@@ -429,7 +429,7 @@ public class ParentOpMode extends LinearOpMode {
         // multiple speeds to get an average, then set the linear scalar to the
         // inverse of the error. For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
-        OdometrySensor.setLinearScalar(1.0);
+        OdometrySensor.setLinearScalar(117.75/99.7468);
         OdometrySensor.setAngularScalar(1.0);
 
         // The IMU on the OTOS includes a gyroscope and accelerometer, which could
@@ -710,6 +710,30 @@ public class ParentOpMode extends LinearOpMode {
         telemetry.addData("rf", Vrf);
         telemetry.addData("rb", Vrb);
         telemetry.addData("angle", robotHead);
+    }
+
+    public void AutoHolonomicCoordinate (double X, double Y, double speed){
+        double currentX = getPosX();
+        double currentY = getPosY();
+        double targetAngle = Math.toDegrees(Math.atan2(Y-currentY, X-currentX));
+        double hypotenuse = Math.hypot(X-currentX, Y-currentY);
+        double margin2 = 7;
+
+        while (hypotenuse > margin2 && opModeIsActive()){
+            autoHolonomicFieldCentric(speed, targetAngle, 0);
+
+            currentX = getPosX();
+            currentY = getPosY();
+            targetAngle = Math.toDegrees(Math.atan2(Y-currentY, X-currentX));
+            hypotenuse = Math.hypot(X-currentX, Y-currentY);
+
+            telemetry.addData("target angle:", targetAngle);
+            telemetry.addData("hypotenuse:", hypotenuse);
+            displayPositionXAndY();
+            telemetry.update();
+        }
+
+        stopper();
     }
 
     public void autorotate (double targetAngle, double speed) {
