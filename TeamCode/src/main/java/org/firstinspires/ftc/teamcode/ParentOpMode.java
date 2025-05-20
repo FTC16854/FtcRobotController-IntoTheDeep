@@ -692,7 +692,7 @@ public class ParentOpMode extends LinearOpMode {
         double robotHead = getAngler();
 //        double offset = Math.toRadians(-90+robotHead);
 //        angle = Math.toRadians(angle)+offset;
-        double offset = Math.toRadians(-90);
+        double offset = Math.toRadians(90); //-90
         angle = angle - Math.toRadians(robotHead) - offset;
 
         double Vlf = (magnitude * Math.cos(angle +(Math.PI/4))+rotateVelocity);
@@ -717,10 +717,11 @@ public class ParentOpMode extends LinearOpMode {
         double currentY = getPosY();
         double targetAngle = Math.toDegrees(Math.atan2(Y-currentY, X-currentX));
         double hypotenuse = Math.hypot(X-currentX, Y-currentY);
-        double margin2 = 7;
+        double margin2 = 2;
 
         while (hypotenuse > margin2 && opModeIsActive()){
             autoHolonomicFieldCentric(speed, targetAngle, 0);
+            //holonomic(); //for testing only*
 
             currentX = getPosX();
             currentY = getPosY();
@@ -728,6 +729,7 @@ public class ParentOpMode extends LinearOpMode {
             hypotenuse = Math.hypot(X-currentX, Y-currentY);
 
             telemetry.addData("target angle:", targetAngle);
+            telemetry.addData("target position", Double.toString(X) + ", " + Double.toString(Y));
             telemetry.addData("hypotenuse:", hypotenuse);
             displayPositionXAndY();
             telemetry.update();
