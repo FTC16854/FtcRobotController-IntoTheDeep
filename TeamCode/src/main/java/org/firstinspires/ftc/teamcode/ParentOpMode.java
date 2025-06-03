@@ -97,7 +97,7 @@ public class ParentOpMode extends LinearOpMode {
     //Extension Positions
     int ExtensionIn = 0;
     int ExtensionMid = 3500;
-    int ExtensionOutLimit = 8000; //9600
+    int ExtensionOutLimit = 10200; //(10411 is absolute max)
     int ExtensionLimitBelow = 6350;
     int targetExtensionPos = ExtensionIn;
 
@@ -212,8 +212,8 @@ public class ParentOpMode extends LinearOpMode {
     public boolean buttonExtensionOut() { return gamepad2.y;}
     public boolean buttonExtensionMid() { return  gamepad2.a;}
     public boolean buttonExtensionIn() { return gamepad2.x;}
-    public boolean buttonExtensionForward() { return gamepad2.left_bumper;}
-    public boolean buttonExtensionBackward() { return gamepad2.right_bumper;}
+    public boolean buttonExtensionForward() { return gamepad2.left_bumper||gamepad1.dpad_up;}
+    public boolean buttonExtensionBackward() { return gamepad2.right_bumper||gamepad1.dpad_down;}
 
     public boolean FieldCentricReset() { return gamepad1.back;}
     public boolean triggerButton(){
