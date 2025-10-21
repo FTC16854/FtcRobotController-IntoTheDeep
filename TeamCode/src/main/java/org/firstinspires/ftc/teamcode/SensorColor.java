@@ -74,12 +74,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //@Disabled
 public class SensorColor extends LinearOpMode {
 
-  /** The colorSensor field will contain a reference to our color sensor hardware object */
+  /**
+   * The colorSensor field will contain a reference to our color sensor hardware object
+   */
   NormalizedColorSensor colorSensor;
 
-  /** The relativeLayout field is used to aid in providing interesting visual feedback
+  /**
+   * The relativeLayout field is used to aid in providing interesting visual feedback
    * in this sample application; you probably *don't* need this when you use a color sensor on your
-   * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */
+   * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller.
+   */
   View relativeLayout;
 
   /*
@@ -92,7 +96,8 @@ public class SensorColor extends LinearOpMode {
    * block around the main, core logic, and an easy way to make that all clear was to separate
    * the former from the latter in separate methods.
    */
-  @Override public void runOpMode() {
+  @Override
+  public void runOpMode() {
 
     // Get a reference to the RelativeLayout so we can later change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
@@ -111,7 +116,7 @@ public class SensorColor extends LinearOpMode {
           relativeLayout.setBackgroundColor(Color.WHITE);
         }
       });
-      }
+    }
   }
 
   protected void runSample() {
@@ -144,7 +149,7 @@ public class SensorColor extends LinearOpMode {
     // If possible, turn the light on in the beginning (it might already be on anyway,
     // we just make sure it is if we can).
     if (colorSensor instanceof SwitchableLight) {
-      ((SwitchableLight)colorSensor).enableLight(true);
+      ((SwitchableLight) colorSensor).enableLight(true);
     }
 
     // Wait for the start button to be pressed.
@@ -179,7 +184,7 @@ public class SensorColor extends LinearOpMode {
         // If the button is (now) down, then toggle the light
         if (xButtonCurrentlyPressed) {
           if (colorSensor instanceof SwitchableLight) {
-            SwitchableLight light = (SwitchableLight)colorSensor;
+            SwitchableLight light = (SwitchableLight) colorSensor;
             light.enableLight(!light.isLightOn());
           }
         }
@@ -213,6 +218,7 @@ public class SensorColor extends LinearOpMode {
       if (colorSensor instanceof DistanceSensor) {
         telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
       }
+      ColorIs();
 
       telemetry.update();
 
@@ -225,28 +231,40 @@ public class SensorColor extends LinearOpMode {
     }
   }
 
-  public boolean ColorGreen(){
-    int MaxGreeen=175;
-    int MinGreeen=155;
+  public boolean ColorGreen() {
+    int MaxGreeen = 195;
+    int MinGreeen = 0;
 
     final float[] hsvValues = new float[3];
     NormalizedRGBA colors = colorSensor.getNormalizedColors();
     Color.colorToHSV(colors.toColor(), hsvValues);
 
-    if(hsvValues[0]>=MinGreeen && hsvValues[0]<=MaxGreeen){
+    if (hsvValues[0] >= MinGreeen && hsvValues[0] <= MaxGreeen) {
       return true;
-    } else{
+    } else {
       return false;
     }
   }
 
-  public boolean IsBall(){
-    double DistanceSensing=5;
-    if (((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM)<DistanceSensing){
-      return true;
-    } else{
-      return false;
+  public void ColorIs() {
+    if (IsBall() == true) {
+      if (ColorGreen() == true) {
+        telemetry.addData("Color: ", "green");
+      } else {
+        telemetry.addData("Color: ", "purple");
+      }
+    } else {
+      telemetry.addData("Color: ", "none");
     }
   }
 
+  public boolean IsBall() {
+    double DistanceSensing = 5;
+    if
+    (((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < DistanceSensing) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
