@@ -232,14 +232,14 @@ public class SensorColor extends LinearOpMode {
   }
 
   public boolean ColorGreen() {
-    int MaxGreeen = 195;
-    int MinGreeen = 0;
+    int MaxGreen = 195;
+    int MinGreen = 80;
 
     final float[] hsvValues = new float[3];
     NormalizedRGBA colors = colorSensor.getNormalizedColors();
     Color.colorToHSV(colors.toColor(), hsvValues);
 
-    if (hsvValues[0] >= MinGreeen && hsvValues[0] <= MaxGreeen) {
+    if (hsvValues[0] >= MinGreen && hsvValues[0] <= MaxGreen) {
       return true;
     } else {
       return false;
@@ -247,8 +247,8 @@ public class SensorColor extends LinearOpMode {
   }
 
   public void ColorIs() {
-    if (IsBall() == true) {
-      if (ColorGreen() == true) {
+    if (IsBall()) {
+      if (ColorGreen()) {
         telemetry.addData("Color: ", "green");
       } else {
         telemetry.addData("Color: ", "purple");

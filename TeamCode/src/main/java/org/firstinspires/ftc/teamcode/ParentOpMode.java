@@ -717,11 +717,19 @@ public class ParentOpMode extends LinearOpMode {
         double currentY = getPosY();
         double targetAngle = Math.toDegrees(Math.atan2(Y-currentY, X-currentX));
         double hypotenuse = Math.hypot(X-currentX, Y-currentY);
-        double margin2 = 2;
+        double margin2 = 4;
 
         while (hypotenuse > margin2 && opModeIsActive()){
-            autoHolonomicFieldCentric(speed, targetAngle, 0);
-            //holonomic(); //for testing only*
+
+             //for testing only*
+            if(gamepad1.dpad_left){
+                autoHolonomicFieldCentric(speed, targetAngle, 0);
+            }else{
+                holonomic();
+            }
+
+//            autoHolonomicFieldCentric(speed, targetAngle, 0);
+
 
             currentX = getPosX();
             currentY = getPosY();
