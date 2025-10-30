@@ -83,7 +83,7 @@ public class OpMode_AutonomusDriving extends ParentOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            AutoHolonomicCoordinate(0,0,0.3);
+            AutoHolonomicCoordinate(0,0,0.5);
             holonomic(); // testing
             checkEmergencyStop();
             displayLiftAndExtensionTelemetry();

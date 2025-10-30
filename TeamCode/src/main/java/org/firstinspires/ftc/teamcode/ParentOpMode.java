@@ -719,9 +719,14 @@ public class ParentOpMode extends LinearOpMode {
         double targetAngle = Math.toDegrees(Math.atan2(Y-currentY, X-currentX));
         double hypotenuse = Math.hypot(X-currentX, Y-currentY);
         double margin2 = 4;
+        double setSpeed = speed;
 
         while (hypotenuse > margin2 && opModeIsActive()){
-
+            if(hypotenuse<10) {
+                speed = setSpeed / 10 * hypotenuse;
+            }else{
+                speed=setSpeed;
+            }
              //for testing only*
             if(gamepad1.dpad_left){
                 autoHolonomicFieldCentric(speed, targetAngle, 0);
@@ -737,8 +742,9 @@ public class ParentOpMode extends LinearOpMode {
             targetAngle = Math.toDegrees(Math.atan2(Y-currentY, X-currentX));
             hypotenuse = Math.hypot(X-currentX, Y-currentY);
 
+            telemetry.addData("Speed:", speed);
             telemetry.addData("target angle:", targetAngle);
-            telemetry.addData("target position", Double.toString(X) + ", " + Double.toString(Y));
+            telemetry.addData("target position:", Double.toString(X) + ", " + Double.toString(Y));
             telemetry.addData("hypotenuse:", hypotenuse);
             displayPositionXAndY();
             telemetry.update();
